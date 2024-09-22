@@ -61,7 +61,7 @@ const LocationTracker = ({ userId }) => {
     const zoomLevel = Math.round(Math.log(360 / region.latitudeDelta) / Math.LN2);
     setZoomLevel(zoomLevel);
 
-    setRes(zoomLevel-2);
+    setRes(zoomLevel-3);
   };
 
 
