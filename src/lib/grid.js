@@ -4,7 +4,7 @@ import * as h3 from "h3-js";
 export const generateHexagonGrid = (coord, setHexagons, res) => {
     const resolution = res; // Adjust this for different hexagon sizes
     const centerHex = h3.latLngToCell(coord[0], coord[1], resolution);
-    const hexRing = h3.gridDisk(centerHex, 16); // Adjust the number for more or fewer hexagons
+    const hexRing = h3.gridDisk(centerHex, 20); // Adjust the number for more or fewer hexagons
 
     const hexCoords = hexRing.map(hexId => {
         const boundary = h3.cellToBoundary(hexId);

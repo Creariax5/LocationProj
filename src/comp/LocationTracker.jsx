@@ -32,7 +32,7 @@ const LocationTracker = ({ userId }) => {
   useEffect(() => {
     if (hexagons.length == 0) {
       if (coord[0] !== 0 && coord[1] !== 0) {
-        generateHexagonGrid(coord, setHexagons, res);
+        //generateHexagonGrid(coord, setHexagons, res);
       }
     } else {
       //let tmp = locationHistory;
@@ -61,7 +61,11 @@ const LocationTracker = ({ userId }) => {
     const zoomLevel = Math.round(Math.log(360 / region.latitudeDelta) / Math.LN2);
     setZoomLevel(zoomLevel);
 
-    setRes(zoomLevel-3);
+    let tmp;
+    const tmpValues = [1, 2, 3, 3, 4, 4, 5, 6, 7, 7, 8, 9, 9, 10, 11];
+    tmp = zoomLevel >= 16 ? 11 : tmpValues[zoomLevel-2];
+
+    setRes(tmp);
   };
 
 

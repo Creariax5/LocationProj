@@ -2,6 +2,7 @@ import { supabase } from '../lib/supabase';
 
 
 export const fetchLocationHistory = async (userId, setLocationHistory) => {
+  console.log("fetching Location History");
   try {
     const { data, error } = await supabase
       .from('locations')
