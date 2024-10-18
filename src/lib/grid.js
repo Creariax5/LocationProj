@@ -34,8 +34,10 @@ export const updateVisitedHexagons = (locations, setVisitedHexagons, res, center
 export const generateMaskPolygon = (coord, mapDelta) => {
     // Generate a large polygon that covers the entire visible map area
     const { latitude, longitude } = coord;
-    const { latitudeDelta, longitudeDelta } = mapDelta;
+    let { latitudeDelta, longitudeDelta } = mapDelta;
 
+    latitudeDelta = latitudeDelta * 16;
+    longitudeDelta = longitudeDelta * 16;
     if (!isFinite(latitude) || !isFinite(longitude) || !isFinite(latitudeDelta) || !isFinite(longitudeDelta)) {
         return null;
     }
