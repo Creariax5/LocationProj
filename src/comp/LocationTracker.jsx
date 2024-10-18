@@ -28,11 +28,6 @@ const LocationTracker = ({ userId }) => {
   }, [locationHistory, res]);
 
   const handleRegionChange = (region) => {
-    setMapDelta({
-      latitudeDelta: region.latitudeDelta,
-      longitudeDelta: region.longitudeDelta,
-    });
-
     const zoomLevel = Math.round(Math.log(360 / region.latitudeDelta) / Math.LN2);
     setZoomLevel(zoomLevel);
 
@@ -59,7 +54,7 @@ const LocationTracker = ({ userId }) => {
             coordinate={{
               latitude: coord.latitude,
               longitude: coord.longitude,
-            }}      
+            }}
             title="Your Location"
             description={`Latitude: ${coord.latitude}, Longitude: ${coord.longitude}`}
           />
@@ -68,8 +63,8 @@ const LocationTracker = ({ userId }) => {
               coordinates={maskPolygon}
               holes={generateHoles(visitedHexagons)}
               strokeWidth={0}
-              strokeColor="rgba(0, 0, 0, 0.3)"
-              fillColor="rgba(0, 0, 0, 0.3)"
+              strokeColor="rgba(0, 0, 0, 0.03)"
+              fillColor="rgba(0, 60, 20, 0.6)"
             />
           )}
         </MapView>
