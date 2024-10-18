@@ -20,6 +20,7 @@ const LocationTracker = ({ userId }) => {
 
   useEffect(() => {
     requestLocationPermission(setCoord, setIsTracking, userId);
+    fetchLocationHistory(userId, setLocationHistory)
   }, []);
 
   useEffect(() => {
@@ -44,12 +45,6 @@ const LocationTracker = ({ userId }) => {
 
   return (
     <View style={{ width: "100%" }} >
-      <ScrollView>
-        <View style={{ margin: 30 }}>
-          <Text>User ID: {userId}</Text>
-          <Text style={{ color: 'red', fontWeight: '600', fontSize: 20 }}>Location Tracking</Text>
-          <Text style={{ fontSize: 20 }}>{coord.latitude}, {coord.longitude}</Text>
-        </View>
         <MapView
           region={{
             latitude: coord.latitude || 37.78825,
@@ -57,7 +52,7 @@ const LocationTracker = ({ userId }) => {
             latitudeDelta: mapDelta.latitudeDelta,
             longitudeDelta: mapDelta.longitudeDelta,
           }}
-          style={{ height: 400 }}
+          style={{ height: 800 }}
           onRegionChangeComplete={handleRegionChange}
         >
           <Marker
@@ -78,13 +73,16 @@ const LocationTracker = ({ userId }) => {
             />
           )}
         </MapView>
-        <View style={{ margin: 10 }}>
+        <View style={{ margin: 10, position: "absolute", top: 0, left: 0 }}>
+          <Text>User ID: {userId}</Text>
+          <Text style={{ fontSize: 20 }}>{coord.latitude}, {coord.longitude}</Text>
+        </View>
+        <View style={{ margin: 10, position: "absolute", top: 60 }}>
           <Text>Zoom Level: {zoomLevel}</Text>
           <Text>Resolution: {res}</Text>
         </View>
-        <Text>{isTracking ? "Your location is tracked" : "Your location is not tracked"}</Text>
-        <Button title="Fetch Location History" onPress={() => fetchLocationHistory(userId, setLocationHistory)} />
-        {/*locationHistory.length > 0 && (
+        {/*<ScrollView>
+        {locationHistory.length > 0 && (
           <View style={{ margin: 30 }}>
             <Text style={{ fontWeight: '600', fontSize: 18 }}>Location History:</Text>
             {locationHistory.map((location, index) => (
@@ -93,8 +91,8 @@ const LocationTracker = ({ userId }) => {
               </Text>
             ))}
           </View>
-        )*/}
-      </ScrollView>
+        )}
+      </ScrollView>*/}
     </View>
   );
 };
