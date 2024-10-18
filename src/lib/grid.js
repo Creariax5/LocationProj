@@ -3,7 +3,7 @@ import {calculateDistance} from "./math";
 
 
 export const updateVisitedHexagons = (locations, setVisitedHexagons, res, centerCoord) => {
-    if (res <= 8) {
+    if (res <= 7) {
         // For resolution 8 and above, keep the original behavior
         const visitedHexIds = new Set(
             locations.map(loc => h3.latLngToCell(loc.latitude, loc.longitude, res))
@@ -18,11 +18,11 @@ export const updateVisitedHexagons = (locations, setVisitedHexagons, res, center
         });
 
         // Garder les 100 premiers emplacements
-        const top100Locations = sortedLocations.slice(0, 100);
+        const topLocations = sortedLocations.slice(0, 3000);
 
         // Créer un ensemble d'identifiants hexagonaux H3
         const visitedHexIds = new Set(
-            top100Locations.map(loc => h3.latLngToCell(loc.latitude, loc.longitude, res))
+            topLocations.map(loc => h3.latLngToCell(loc.latitude, loc.longitude, res))
         );
 
         setVisitedHexagons(visitedHexIds);
