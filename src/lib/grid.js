@@ -43,10 +43,10 @@ export const generateMaskPolygon = (coord, mapDelta) => {
     }
 
     return [
-        { latitude: latitude - latitudeDelta, longitude: longitude - longitudeDelta },
-        { latitude: latitude - latitudeDelta, longitude: longitude + longitudeDelta },
-        { latitude: latitude + latitudeDelta, longitude: longitude + longitudeDelta },
-        { latitude: latitude + latitudeDelta, longitude: longitude - longitudeDelta },
+        { latitude: -85, longitude: 180 },
+        { latitude: -85, longitude: 180 },
+        { latitude: 85 + latitudeDelta, longitude: 89 },
+        { latitude: 85 + latitudeDelta, longitude: 180 },
     ];
 };
 
