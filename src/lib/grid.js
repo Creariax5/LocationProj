@@ -1,37 +1,59 @@
 import * as h3 from "h3-js";
+import {calculateDistance} from "./math";
 
 
-export const generateHexagonGrid = (coord, setHexagons, res) => {
-    const resolution = res; // Adjust this for different hexagon sizes
-    const centerHex = h3.latLngToCell(coord[0], coord[1], resolution);
-    const hexRing = h3.gridDisk(centerHex, 20); // Adjust the number for more or fewer hexagons
+export const updateVisitedHexagons = (locations, setVisitedHexagons, res, centerCoord) => {
+    if (res <= 8) {
+        // For resolution 8 and above, keep the original behavior
+        const visitedHexIds = new Set(
+            locations.map(loc => h3.latLngToCell(loc.latitude, loc.longitude, res))
+        );
+        setVisitedHexagons(visitedHexIds);
+    } else {
+        // Trier les emplacements par distance
+        const sortedLocations = locations.sort((a, b) => {
+            const distA = calculateDistance(centerCoord.latitude, centerCoord.longitude, a.latitude, a.longitude);
+            const distB = calculateDistance(centerCoord.latitude, centerCoord.longitude, b.latitude, b.longitude);
+            return distA - distB;
+        });
 
-    const hexCoords = hexRing.map(hexId => {
-        const boundary = h3.cellToBoundary(hexId);
-        return {
-            id: hexId, // Store the hexagon ID
-            boundary: boundary.map(([lat, lng]) => ({
-                latitude: lat,
-                longitude: lng
-            })),
-            visited: false
-        };
-    });
+        // Garder les 100 premiers emplacements
+        const top100Locations = sortedLocations.slice(0, 100);
 
-    setHexagons(hexCoords);
+        // Créer un ensemble d'identifiants hexagonaux H3
+        const visitedHexIds = new Set(
+            top100Locations.map(loc => h3.latLngToCell(loc.latitude, loc.longitude, res))
+        );
+
+        setVisitedHexagons(visitedHexIds);
+    }
 };
 
 
-export const updateVisitedHexagons = (locations, setHexagons, res) => {
-    const resolution = res; // Same as in generateHexagonGrid
-    const visitedHexIds = new Set(
-        locations.map(loc => h3.latLngToCell(loc.latitude, loc.longitude, resolution))
-    );
 
-    setHexagons(prevHexagons =>
-        prevHexagons.map(hexagon => ({
-            ...hexagon,
-            visited: visitedHexIds.has(hexagon.id) // Compare using stored ID
-        }))
-    );
+export const generateMaskPolygon = (coord, mapDelta) => {
+    // Generate a large polygon that covers the entire visible map area
+    const { latitude, longitude } = coord;
+    const { latitudeDelta, longitudeDelta } = mapDelta;
+
+    if (!isFinite(latitude) || !isFinite(longitude) || !isFinite(latitudeDelta) || !isFinite(longitudeDelta)) {
+        return null;
+    }
+
+    return [
+        { latitude: latitude - latitudeDelta, longitude: longitude - longitudeDelta },
+        { latitude: latitude - latitudeDelta, longitude: longitude + longitudeDelta },
+        { latitude: latitude + latitudeDelta, longitude: longitude + longitudeDelta },
+        { latitude: latitude + latitudeDelta, longitude: longitude - longitudeDelta },
+    ];
+};
+
+
+export const generateHoles = (visitedHexagons) => {
+    return Array.from(visitedHexagons).map(hexId => {
+        return h3.cellToBoundary(hexId).map(([lat, lng]) => ({
+            latitude: lat,
+            longitude: lng
+        }));
+    });
 };

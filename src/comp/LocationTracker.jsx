@@ -3,16 +3,14 @@ import { View, Text, ScrollView, Button } from 'react-native';
 import { requestLocationPermission } from "../lib/perms";
 import { fetchLocationHistory } from "../lib/database";
 import MapView, { Marker, Polygon } from 'react-native-maps';
-import { generateHexagonGrid, updateVisitedHexagons } from "../lib/grid";
+import { updateVisitedHexagons, generateMaskPolygon, generateHoles } from "../lib/grid";
 
-
-const delta = 1;
 
 const LocationTracker = ({ userId }) => {
-  const [coord, setCoord] = useState([0, 0]);
+  const [coord, setCoord] = useState({ latitude: 37.78825, longitude: -122.4324 });
   const [isTracking, setIsTracking] = useState(false);
   const [locationHistory, setLocationHistory] = useState([]);
-  const [hexagons, setHexagons] = useState([]);
+  const [visitedHexagons, setVisitedHexagons] = useState(new Set());
   const [res, setRes] = useState(8);
   const [mapDelta, setMapDelta] = useState({
     latitudeDelta: 0.0922,
@@ -20,36 +18,13 @@ const LocationTracker = ({ userId }) => {
   });
   const [zoomLevel, setZoomLevel] = useState(0);
 
-
   useEffect(() => {
     requestLocationPermission(setCoord, setIsTracking, userId);
-
-    return () => {
-      // stopLocationTracking(setIsTracking);
-    }
   }, []);
 
   useEffect(() => {
-    if (hexagons.length == 0) {
-      if (coord[0] !== 0 && coord[1] !== 0) {
-        //generateHexagonGrid(coord, setHexagons, res);
-      }
-    } else {
-      //let tmp = locationHistory;
-      //setLocationHistory(tmp.push({"id": tmp.length + 500, "latitude": coord[0], "longitude": coord[1]}));
-    }
-  }, [coord]);
-
-  useEffect(() => {
-    updateVisitedHexagons(locationHistory, setHexagons, res);
-  }, [locationHistory]);
-
-  useEffect(() => {
-    if (coord[0] !== 0 && coord[1] !== 0) {
-      generateHexagonGrid(coord, setHexagons, res);
-    }
-    updateVisitedHexagons(locationHistory, setHexagons, res);
-  }, [res]);
+    updateVisitedHexagons(locationHistory, setVisitedHexagons, res, coord); // replace coord by centerCoord
+  }, [locationHistory, res]);
 
   const handleRegionChange = (region) => {
     setMapDelta({
@@ -57,17 +32,15 @@ const LocationTracker = ({ userId }) => {
       longitudeDelta: region.longitudeDelta,
     });
 
-    // Calculate zoom level
     const zoomLevel = Math.round(Math.log(360 / region.latitudeDelta) / Math.LN2);
     setZoomLevel(zoomLevel);
 
-    let tmp;
     const tmpValues = [1, 2, 3, 3, 4, 4, 5, 6, 7, 7, 8, 9, 9, 10, 11];
-    tmp = zoomLevel >= 16 ? 11 : tmpValues[zoomLevel-2];
-
-    setRes(tmp);
+    const newRes = zoomLevel >= 16 ? 11 : tmpValues[zoomLevel-2];
+    setRes(newRes);
   };
 
+  const maskPolygon = generateMaskPolygon(coord, mapDelta);
 
   return (
     <View style={{ width: "100%" }} >
@@ -75,61 +48,43 @@ const LocationTracker = ({ userId }) => {
         <View style={{ margin: 30 }}>
           <Text>User ID: {userId}</Text>
           <Text style={{ color: 'red', fontWeight: '600', fontSize: 20 }}>Location Tracking</Text>
-          <Text style={{ fontSize: 20 }}>{coord[0]}, {coord[1]}</Text>
+          <Text style={{ fontSize: 20 }}>{coord.latitude}, {coord.longitude}</Text>
         </View>
         <MapView
           region={{
-            latitude: coord[0] || 37.78825,
-            longitude: coord[1] || -122.4324,
-            latitudeDelta: 0.0922 / delta,
-            longitudeDelta: 0.0421 / delta,
+            latitude: coord.latitude || 37.78825,
+            longitude: coord.longitude || -122.4324,
+            latitudeDelta: mapDelta.latitudeDelta,
+            longitudeDelta: mapDelta.longitudeDelta,
           }}
           style={{ height: 400 }}
           onRegionChangeComplete={handleRegionChange}
         >
           <Marker
             coordinate={{
-              latitude: coord[0],
-              longitude: coord[1],
-            }}
+              latitude: coord.latitude,
+              longitude: coord.longitude,
+            }}      
             title="Your Location"
-            description={`Latitude: ${coord[0]}, Longitude: ${coord[1]}`}
+            description={`Latitude: ${coord.latitude}, Longitude: ${coord.longitude}`}
           />
-          {hexagons.map((hexagon, index) => (
+          {maskPolygon && (
             <Polygon
-              key={index}
-              coordinates={hexagon.boundary}
-              strokeWidth={1}
+              coordinates={maskPolygon}
+              holes={generateHoles(visitedHexagons)}
+              strokeWidth={0}
               strokeColor="rgba(0, 0, 0, 0.3)"
-              fillColor={hexagon.visited ? "rgba(0, 0, 0, 0)" : "rgba(0, 0, 0, 0.3)"}
+              fillColor="rgba(0, 0, 0, 0.3)"
             />
-          ))}
-          {/*locationHistory.map((location, index) => (
-          <Marker
-            key={location.id}
-            coordinate={{
-              latitude: location.latitude,
-              longitude: location.longitude,
-            }}
-            title={`Location ${index + 1}`}
-            description={`Latitude: ${location.latitude}, Longitude: ${location.longitude}`}
-            pinColor="blue"
-          />
-        ))*/}
+          )}
         </MapView>
         <View style={{ margin: 10 }}>
           <Text>Zoom Level: {zoomLevel}</Text>
-          <Text>Latitude Delta: {mapDelta.latitudeDelta.toFixed(6)}</Text>
-          <Text>Longitude Delta: {mapDelta.longitudeDelta.toFixed(6)}</Text>
+          <Text>Resolution: {res}</Text>
         </View>
-        {isTracking ? (
-          <Text>Your location is tracked</Text>
-        ) : (
-          <Text>Your location is not tracked</Text>
-        )}
+        <Text>{isTracking ? "Your location is tracked" : "Your location is not tracked"}</Text>
         <Button title="Fetch Location History" onPress={() => fetchLocationHistory(userId, setLocationHistory)} />
-
-        {locationHistory.length > 0 && (
+        {/*locationHistory.length > 0 && (
           <View style={{ margin: 30 }}>
             <Text style={{ fontWeight: '600', fontSize: 18 }}>Location History:</Text>
             {locationHistory.map((location, index) => (
@@ -138,9 +93,9 @@ const LocationTracker = ({ userId }) => {
               </Text>
             ))}
           </View>
-        )}
+        )*/}
       </ScrollView>
-    </View >
+    </View>
   );
 };
 

@@ -33,7 +33,7 @@ export const startLocationTracking = (setCoord, setIsTracking, userId) => {
     };
 
     const updateLocation = (latitude, longitude) => {
-        setCoord([latitude, longitude]);
+        setCoord({ latitude: latitude, longitude: longitude });
         console.log([latitude, longitude]);
         saveLocationToSupabase(userId, latitude, longitude);
         prevLatitude = latitude;
