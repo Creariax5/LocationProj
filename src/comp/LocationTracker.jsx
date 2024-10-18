@@ -7,7 +7,9 @@ import { updateVisitedHexagons, generateMaskPolygon, generateHoles } from "../li
 
 
 const LocationTracker = ({ userId }) => {
-  const [coord, setCoord] = useState({ latitude: 37.78825, longitude: -122.4324 });
+  const defaultCoord = { latitude: 37.78825, longitude: -122.4324 };
+  const [coord, setCoord] = useState(defaultCoord);
+  const [newPos, setNewPos] = useState(defaultCoord);
   const [isTracking, setIsTracking] = useState(false);
   const [locationHistory, setLocationHistory] = useState([]);
   const [visitedHexagons, setVisitedHexagons] = useState(new Set());
@@ -24,6 +26,20 @@ const LocationTracker = ({ userId }) => {
   }, []);
 
   useEffect(() => {
+    console.log("coord changed");
+    if (newPos.latitude === defaultCoord.latitude && newPos.longitude === defaultCoord.longitude) {
+      console.log("newPos == defaultCoord true");
+      setNewPos(coord);
+    }
+  }, [coord, newPos]);
+
+  useEffect(() => {
+    console.log("newPos changed");
+    console.log(newPos.latitude);
+    console.log(newPos.longitude);
+  }, [newPos]);
+
+  useEffect(() => {
     updateVisitedHexagons(locationHistory, setVisitedHexagons, res, coord); // replace coord by centerCoord
   }, [locationHistory, res]);
 
@@ -36,14 +52,14 @@ const LocationTracker = ({ userId }) => {
     setRes(newRes);
   };
 
-  const maskPolygon = generateMaskPolygon(coord, mapDelta);
+  const maskPolygon = generateMaskPolygon();
 
   return (
     <View style={{ width: "100%" }} >
         <MapView
           region={{
-            latitude: coord.latitude || 37.78825,
-            longitude: coord.longitude || -122.4324,
+            latitude: newPos.latitude,
+            longitude: newPos.longitude,
             latitudeDelta: mapDelta.latitudeDelta,
             longitudeDelta: mapDelta.longitudeDelta,
           }}

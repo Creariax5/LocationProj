@@ -31,22 +31,12 @@ export const updateVisitedHexagons = (locations, setVisitedHexagons, res, center
 
 
 
-export const generateMaskPolygon = (coord, mapDelta) => {
-    // Generate a large polygon that covers the entire visible map area
-    const { latitude, longitude } = coord;
-    let { latitudeDelta, longitudeDelta } = mapDelta;
-
-    latitudeDelta = latitudeDelta * 16;
-    longitudeDelta = longitudeDelta * 16;
-    if (!isFinite(latitude) || !isFinite(longitude) || !isFinite(latitudeDelta) || !isFinite(longitudeDelta)) {
-        return null;
-    }
-
+export const generateMaskPolygon = () => {
     return [
         { latitude: -85, longitude: 180 },
         { latitude: -85, longitude: 180 },
-        { latitude: 85 + latitudeDelta, longitude: 89 },
-        { latitude: 85 + latitudeDelta, longitude: 180 },
+        { latitude: 85, longitude: 89 },
+        { latitude: 85, longitude: 180 },
     ];
 };
 
