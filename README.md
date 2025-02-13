@@ -2,6 +2,9 @@
 
 A personal location tracking mobile application built with React Native that helps you keep track of where you've been.
 
+![image](https://github.com/user-attachments/assets/e0d65111-b9ce-4fe7-a215-4384e2e26b6c)
+
+
 ## Features
 
 - 🗺️ Real-time location tracking
