@@ -1,79 +1,99 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# LocApp 📍
 
-# Getting Started
+A personal location tracking mobile application built with React Native that helps you keep track of where you've been.
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+## Features
 
-## Step 1: Start the Metro Server
+- 🗺️ Real-time location tracking
+- 📱 Clean and intuitive user interface
+- 🎯 Precise coordinate system
+- 🔍 Adjustable zoom levels and resolution settings
+- 🔐 Unique user ID system for data management
+- 🌍 Google Maps integration
+- 📱 Cross-platform compatibility (iOS & Android)
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+## Technologies Used
 
-To start Metro, run the following command from the _root_ of your React Native project:
+- React Native
+- Google Maps API
+- Location Services
+- AsyncStorage for local data persistence
+- Supabase
 
+## Prerequisites
+
+Before you begin, ensure you have met the following requirements:
+- Node.js (v14 or higher)
+- npm or yarn
+- React Native CLI
+- Xcode (for iOS development)
+- Android Studio (for Android development)
+- Google Maps API key
+
+## Installation
+
+1. Clone the repository:
 ```bash
-# using npm
-npm start
-
-# OR using Yarn
-yarn start
+git clone https://github.com/yourusername/locapp.git
 ```
 
-## Step 2: Start your Application
-
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
-
-### For Android
-
+2. Navigate to the project directory:
 ```bash
-# using npm
-npm run android
-
-# OR using Yarn
-yarn android
+cd locapp
 ```
 
-### For iOS
-
+3. Install dependencies:
 ```bash
-# using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
+npm install
+# or
+yarn install
 ```
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+4. Create a `.env` file in the root directory and add your Google Maps API key:
+```
+GOOGLE_MAPS_API_KEY=your_api_key_here
+```
 
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
+5. For iOS, install pods:
+```bash
+cd ios && pod install && cd ..
+```
 
-## Step 3: Modifying your App
+## Running the App
 
-Now that you have successfully run the app, let's modify it.
+### iOS
+```bash
+npx react-native run-ios
+```
 
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
+### Android
+```bash
+npx react-native run-android
+```
 
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
+## Usage
 
-## Congratulations! :tada:
+1. Launch the app
+2. Allow location permissions when prompted
+3. The app will automatically start tracking your location
+4. Use the zoom controls to adjust the map view
+5. Your unique user ID is displayed at the top for reference
 
-You've successfully run and modified your React Native App. :partying_face:
+## License
 
-### Now what?
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
+## Contact
 
-# Troubleshooting
+Florian DEMARTINI - florian.demartini.dev@gmail.com
 
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+Project Link: [https://github.com/yourusername/locapp](https://github.com/yourusername/locapp)
 
-# Learn More
+## Acknowledgments
 
-To learn more about React Native, take a look at the following resources:
+- Google Maps API
+- React Native Community
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+---
+
+Made with ❤️ by [Florian Demartini]
